@@ -10,7 +10,7 @@
 | [`exp06_yolo11_sprint_start`](exp06_yolo11_sprint_start/) | 起跑动作目标检测 | YOLO11n + aHash 抗泄漏分组交叉验证 | 14 个脚本 |
 | [`exp07_face_recognition`](exp07_face_recognition/) | 人脸检测与动态人脸识别 | YuNet + 相似变换对齐 + ArcFace + 多帧追踪 | 工程（约 4400 行） |
 
-实验三、实验七的编号沿用课程原始排课，未出现的编号当时未留代码。
+目录编号沿用课程原始排课；实验三当时未留代码，故缺号。
 
 ## 快速开始
 
