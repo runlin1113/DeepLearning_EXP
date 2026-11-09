@@ -8,7 +8,7 @@
 | [`exp04_lenet_flower`](exp04_lenet_flower/) | LeNet-5 五类花卉图像分类 | 手写 LeNet（Conv-Pool-Conv-Pool-FC×3） | 3 个脚本 + 95 张图 |
 | [`exp05_wakeword_cnn`](exp05_wakeword_cnn/) | 语音唤醒词识别 | Mel 频谱 + 轻量 CNN + SpecAugment | 4 个脚本 + 训练好的权重 |
 | [`exp06_yolo11_sprint_start`](exp06_yolo11_sprint_start/) | 起跑动作目标检测 | YOLO11n + aHash 抗泄漏分组交叉验证 | 14 个脚本 |
-| [`exp07_face_recognition`](exp07_face_recognition/) | 人脸检测与动态人脸识别 | YuNet + 相似变换对齐 + ArcFace + 多帧追踪 | 工程（约 4400 行） |
+| [`exp07_face_recognition`](exp07_face_recognition/) | 人脸检测与动态人脸识别 | YuNet + 相似变换对齐 + ArcFace + 多帧追踪 | 54 个 py，约 5400 行 |
 
 目录编号沿用课程原始排课；实验三当时未留代码，故缺号。
 
