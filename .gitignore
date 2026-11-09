@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv*/
+venv*/
+
+# IDE
+.idea/
+.vscode/
+
+# 数据与权重（体积大 / 含个人数据，自行准备）
+data/lfw20/
+data/lfw20_aligned/
+data/images/
+dataset/images/
+dataset/labels/
+dataset/photo*/
+models/*.onnx
+
+# 训练产物
+runs/
+outputs/
+*.log
+*.cache

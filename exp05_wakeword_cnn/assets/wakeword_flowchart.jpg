@@ -1,0 +1,61 @@
+<svg viewBox="0 0 680 700" width="100%" role="img">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#3a4a5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+<title>语音唤醒词识别实验流程图</title>
+<desc>六个阶段的实验流程，每个阶段明确标注输入、处理、输出，箭头表示数据在阶段间的流转。</desc>
+
+<text x="340" y="32" text-anchor="middle" font-size="16" font-weight="500" fill="#1a2b3c">语音唤醒词识别 — 实验流程图</text>
+<text x="340" y="54" text-anchor="middle" font-size="12" fill="#5a6b7b">每个阶段标注：输入 → 处理 → 输出</text>
+
+<!-- Stage 1 -->
+<rect x="60" y="72" width="560" height="84" rx="10" fill="#ffffff" stroke="#185FA5" stroke-width="1.5"/>
+<text x="80" y="95" font-size="14" font-weight="500" fill="#185FA5">阶段1　数据采集</text>
+<text x="80" y="116" font-size="12" fill="#243443">输入：手机录制的语音片段</text>
+<text x="80" y="134" font-size="12" fill="#243443">处理：按唤醒词类别分目录存入 raw/</text>
+<text x="80" y="152" font-size="12" fill="#243443">输出：dataset/&lt;类&gt;/raw/*.m4a（共 81 条）</text>
+
+<!-- Stage 2 -->
+<rect x="60" y="174" width="560" height="84" rx="10" fill="#ffffff" stroke="#0F6E56" stroke-width="1.5"/>
+<text x="80" y="197" font-size="14" font-weight="500" fill="#0F6E56">阶段2　格式转码　convert_m4a_to_wav.py</text>
+<text x="80" y="218" font-size="12" fill="#243443">输入：raw/*.m4a（AAC 编码）</text>
+<text x="80" y="236" font-size="12" fill="#243443">处理：ffmpeg 转码 16kHz 单声道 PCM</text>
+<text x="80" y="254" font-size="12" fill="#243443">输出：wav_out/*.wav（与 m4a 一一对应）</text>
+
+<!-- Stage 3 -->
+<rect x="60" y="276" width="560" height="84" rx="10" fill="#ffffff" stroke="#534AB7" stroke-width="1.5"/>
+<text x="80" y="299" font-size="14" font-weight="500" fill="#534AB7">阶段3　特征提取　preprocess_audio.py</text>
+<text x="80" y="320" font-size="12" fill="#243443">输入：wav_out/*.wav</text>
+<text x="80" y="338" font-size="12" fill="#243443">处理：librosa 梅尔频谱 (40×32) 功率转 dB</text>
+<text x="80" y="356" font-size="12" fill="#243443">输出：mel_npy/*.npy + mel_images/*.png + class_names.txt</text>
+
+<!-- Stage 4 -->
+<rect x="60" y="378" width="560" height="84" rx="10" fill="#ffffff" stroke="#854F0B" stroke-width="1.5"/>
+<text x="80" y="401" font-size="14" font-weight="500" fill="#854F0B">阶段4　数据划分</text>
+<text x="80" y="422" font-size="12" fill="#243443">输入：全部 npy 特征 + class_names.txt</text>
+<text x="80" y="440" font-size="12" fill="#243443">处理：按类别分层抽样 8:2 + 特征归一化</text>
+<text x="80" y="458" font-size="12" fill="#243443">输出：训练集 65 条 / 验证集 16 条</text>
+
+<!-- Stage 5 -->
+<rect x="60" y="480" width="560" height="84" rx="10" fill="#ffffff" stroke="#993C1D" stroke-width="1.5"/>
+<text x="80" y="503" font-size="14" font-weight="500" fill="#993C1D">阶段5　模型训练　train_cnn.py</text>
+<text x="80" y="524" font-size="12" fill="#243443">输入：训练集特征 + 标签（4 类）</text>
+<text x="80" y="542" font-size="12" fill="#243443">处理：CNN 训练 + SpecAugment + Dropout + 早停 + 学习率调度</text>
+<text x="80" y="560" font-size="12" fill="#243443">输出：wakeword_cnn.pt（最佳验证精度 0.812）</text>
+
+<!-- Stage 6 -->
+<rect x="60" y="582" width="560" height="84" rx="10" fill="#ffffff" stroke="#3B6D11" stroke-width="1.5"/>
+<text x="80" y="605" font-size="14" font-weight="500" fill="#3B6D11">阶段6　评估与推理　infer.py</text>
+<text x="80" y="626" font-size="12" fill="#243443">输入：验证集特征 / 待识别 wav + 模型</text>
+<text x="80" y="644" font-size="12" fill="#243443">处理：计算精度与混淆矩阵 / 重提取特征后预测</text>
+<text x="80" y="662" font-size="12" fill="#243443">输出：混淆矩阵 + 类别标签与置信度概率</text>
+
+<!-- arrows between stages -->
+<line x1="340" y1="156" x2="340" y2="172" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="340" y1="258" x2="340" y2="274" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="340" y1="360" x2="340" y2="376" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="340" y1="462" x2="340" y2="478" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="340" y1="564" x2="340" y2="580" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+</svg>

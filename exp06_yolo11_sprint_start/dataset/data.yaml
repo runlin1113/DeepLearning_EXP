@@ -1,0 +1,6 @@
+# 自动生成 @ 2026-10-20  seed=42
+train: images/train
+val: images/val
+
+nc: 1
+names: ['start']

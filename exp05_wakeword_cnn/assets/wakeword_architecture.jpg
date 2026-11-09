@@ -1,0 +1,104 @@
+<svg viewBox="0 0 680 690" width="100%" role="img">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#3a4a5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="darrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#993C1D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+<title>语音唤醒词识别系统架构图</title>
+<desc>五个处理模块按数据流向串联，左侧为处理脚本模块，右侧为各模块产出的数据文件，箭头表示数据依赖关系。</desc>
+
+<text x="340" y="32" text-anchor="middle" font-size="16" font-weight="500" fill="#1a2b3c">语音唤醒词识别 — 系统架构图</text>
+<text x="340" y="54" text-anchor="middle" font-size="12" fill="#5a6b7b">左：处理模块（脚本）　右：对应产出物　实线：主数据流　虚线：模型复用</text>
+
+<!-- Module 1 -->
+<rect x="40" y="78" width="370" height="92" rx="10" fill="#ffffff" stroke="#185FA5" stroke-width="1.5"/>
+<text x="58" y="102" font-size="14" font-weight="500" fill="#185FA5">① 原始数据层　dataset/&lt;类&gt;/raw/</text>
+<line x1="58" y1="110" x2="392" y2="110" stroke="#185FA5" stroke-width="1"/>
+<text x="58" y="130" font-size="12" fill="#243443">功能：按类别存放手机录制的 .m4a 原始语音</text>
+<text x="58" y="148" font-size="12" fill="#243443">类别：laicai / lingrunlin / qidong / other</text>
+<text x="58" y="166" font-size="12" fill="#243443">联系：转码模块的唯一输入来源</text>
+
+<!-- Module 2 -->
+<rect x="40" y="200" width="370" height="92" rx="10" fill="#ffffff" stroke="#0F6E56" stroke-width="1.5"/>
+<text x="58" y="224" font-size="14" font-weight="500" fill="#0F6E56">② 转码模块　convert_m4a_to_wav.py</text>
+<line x1="58" y1="232" x2="392" y2="232" stroke="#0F6E56" stroke-width="1"/>
+<text x="58" y="252" font-size="12" fill="#243443">功能：ffmpeg 把 .m4a 转 16kHz 单声道 PCM wav</text>
+<text x="58" y="270" font-size="12" fill="#243443">路径：相对路径自适应 + FFMPEG_EXE 回退</text>
+<text x="58" y="288" font-size="12" fill="#243443">输出：各类别 wav_out/*.wav</text>
+
+<!-- Module 3 -->
+<rect x="40" y="322" width="370" height="92" rx="10" fill="#ffffff" stroke="#534AB7" stroke-width="1.5"/>
+<text x="58" y="346" font-size="14" font-weight="500" fill="#534AB7">③ 特征提取模块　preprocess_audio.py</text>
+<line x1="58" y1="354" x2="392" y2="354" stroke="#534AB7" stroke-width="1"/>
+<text x="58" y="374" font-size="12" fill="#243443">功能：librosa 提取 40×32 梅尔频谱图</text>
+<text x="58" y="392" font-size="12" fill="#243443">输出：mel_npy/*.npy + mel_images/*.png</text>
+<text x="58" y="410" font-size="12" fill="#243443">生成：class_names.txt 类别清单</text>
+
+<!-- Module 4 -->
+<rect x="40" y="444" width="370" height="92" rx="10" fill="#ffffff" stroke="#854F0B" stroke-width="1.5"/>
+<text x="58" y="468" font-size="14" font-weight="500" fill="#854F0B">④ 模型训练模块　train_cnn.py</text>
+<line x1="58" y1="476" x2="392" y2="476" stroke="#854F0B" stroke-width="1"/>
+<text x="58" y="496" font-size="12" fill="#243443">功能：CNN 训练 + 分层抽样 + 早停</text>
+<text x="58" y="514" font-size="12" fill="#243443">增强：SpecAugment + Dropout 抑制过拟合</text>
+<text x="58" y="532" font-size="12" fill="#243443">输出：wakeword_cnn.pt + 曲线/混淆矩阵</text>
+
+<!-- Module 5 -->
+<rect x="40" y="566" width="370" height="92" rx="10" fill="#ffffff" stroke="#3B6D11" stroke-width="1.5"/>
+<text x="58" y="590" font-size="14" font-weight="500" fill="#3B6D11">⑤ 推理模块　infer.py</text>
+<line x1="58" y1="598" x2="392" y2="598" stroke="#3B6D11" stroke-width="1"/>
+<text x="58" y="618" font-size="12" fill="#243443">输入：待识别 wav + 训练好的模型</text>
+<text x="58" y="636" font-size="12" fill="#243443">功能：重提取特征 → 模型预测</text>
+<text x="58" y="654" font-size="12" fill="#243443">输出：4 类唤醒词及置信度概率</text>
+
+<!-- Artifacts -->
+<rect x="440" y="200" width="200" height="92" rx="10" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
+<text x="456" y="222" font-size="13" font-weight="500" fill="#0F6E56">产出 · 音频</text>
+<line x1="456" y1="229" x2="624" y2="229" stroke="#0F6E56" stroke-width="0.8"/>
+<text x="456" y="248" font-size="12" fill="#243443">wav_out/*.wav</text>
+<text x="456" y="266" font-size="12" fill="#243443">16kHz 单声道</text>
+<text x="456" y="284" font-size="12" fill="#243443">与 m4a 一一对应</text>
+
+<rect x="440" y="322" width="200" height="92" rx="10" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.2"/>
+<text x="456" y="344" font-size="13" font-weight="500" fill="#534AB7">产出 · 特征</text>
+<line x1="456" y1="351" x2="624" y2="351" stroke="#534AB7" stroke-width="0.8"/>
+<text x="456" y="370" font-size="12" fill="#243443">mel_npy/*.npy (40,32)</text>
+<text x="456" y="388" font-size="12" fill="#243443">mel_images/*.png</text>
+<text x="456" y="406" font-size="12" fill="#243443">class_names.txt</text>
+
+<rect x="440" y="444" width="200" height="92" rx="10" fill="#FAEEDA" stroke="#854F0B" stroke-width="1.2"/>
+<text x="456" y="466" font-size="13" font-weight="500" fill="#854F0B">产出 · 模型</text>
+<line x1="456" y1="473" x2="624" y2="473" stroke="#854F0B" stroke-width="0.8"/>
+<text x="456" y="492" font-size="12" fill="#243443">wakeword_cnn.pt</text>
+<text x="456" y="510" font-size="12" fill="#243443">training_curves.png</text>
+<text x="456" y="528" font-size="12" fill="#243443">confusion_matrix.png</text>
+
+<rect x="440" y="566" width="200" height="92" rx="10" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1.2"/>
+<text x="456" y="588" font-size="13" font-weight="500" fill="#3B6D11">产出 · 结果</text>
+<line x1="456" y1="595" x2="624" y2="595" stroke="#3B6D11" stroke-width="0.8"/>
+<text x="456" y="614" font-size="12" fill="#243443">类别标签</text>
+<text x="456" y="632" font-size="12" fill="#243443">置信度概率</text>
+<text x="456" y="650" font-size="12" fill="#243443">端到端验证</text>
+
+<!-- vertical main flow arrows -->
+<line x1="225" y1="170" x2="225" y2="198" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="225" y1="292" x2="225" y2="320" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="225" y1="414" x2="225" y2="442" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="225" y1="536" x2="225" y2="564" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- horizontal module->artifact arrows -->
+<line x1="410" y1="246" x2="438" y2="246" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="410" y1="368" x2="438" y2="368" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="410" y1="490" x2="438" y2="490" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="410" y1="612" x2="438" y2="612" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- dashed model -> infer reuse -->
+<polyline points="540,536 540,592 410,612" fill="none" stroke="#993C1D" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#darrow)"/>
+<text x="546" y="566" font-size="11" fill="#993C1D">载入模型</text>
+
+<!-- input arrow into module1 -->
+<line x1="225" y1="56" x2="225" y2="76" stroke="#3a4a5a" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="232" y="68" font-size="11" fill="#5a6b7b">手机录音</text>
+</svg>
